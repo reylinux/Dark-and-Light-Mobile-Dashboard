@@ -1,0 +1,62 @@
+type: horizontal-stack
+cards:
+  - type: markdown
+    text_only: true
+    content: |-
+      {% set time = now().hour %}
+      {% if (time >= 18) %} 
+      # Evening, {{ user }}!
+      {% elif (time >= 12) %}
+      # Afternoon, {{ user }}!
+      {% elif (time >= 5) %}
+      # Morning, {{ user }}!
+      {% else %}
+      # Welcome, {{ user }}!
+      {% endif %}
+  - type: custom:mushroom-chips-card
+    chips:
+      - type: template
+        entity: sensor.active_notification_count
+        icon: mdi:bell
+        tap_action:
+          action: navigate
+          navigation_path: "#notifications"
+        hold_action:
+          action: none
+        card_mod:
+          style: >
+            ha-card {
+              position: relative;
+            }
+
+
+            {% set notifications = states('sensor.active_notification_count') |
+            int %}
+
+            {% if notifications > 0 %}
+
+            ha-card:after {
+              content: "{{ notifications }}";
+              position: absolute;
+              top: -3px;
+              right: -3px;
+              background-color: red;
+              color: white;
+              border-radius: 50%;
+              width: 16px;
+              height: 16px;
+              font-size: 10px;
+              line-height: 16px;
+              text-align: center;
+              display: inline-block;
+              font-weight: bold;
+              box-shadow: 0 0 0 1px white;
+            }
+
+            {% endif %}
+    alignment: end
+card_mod:
+  style: |
+    ha-card {
+      margin-top: 1.5em
+    }
