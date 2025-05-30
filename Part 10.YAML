@@ -1,0 +1,80 @@
+type: custom:stack-in-card
+cards:
+  - type: grid
+    square: false
+    columns: 2
+    cards:
+      - type: custom:mushroom-template-card
+        entity: sensor.living_room_temperature
+        primary: |
+          {{ states(entity) | round(1) }}°C 
+        secondary: Temperature
+        icon: |
+          {% set hvac_mode = states('climate.heat_pump') %}
+          {% if hvac_mode == 'heat' %} mdi:fire
+          {% elif hvac_mode == 'cool' %} mdi:snowflake
+          {% elif hvac_mode == 'fan_only' %} mdi:fan
+          {% else %} mdi:thermometer
+          {% endif %}
+        name: Temperature
+        icon_color: |
+          {% set temp = states('sensor.living_room_temperature') | float %}
+          {% if temp < 16 %} #CEB2F5
+          {% elif temp < 18 %} #5EBDEE
+          {% elif temp < 22 %} #9cc8b8
+          {% elif temp < 24 %} #e7b562
+          {% elif temp < 27 %} #FF564B
+          {% else %} #99332d
+          {% endif %}        
+        card_mod:
+          style: |
+            ha-card {
+                border: none;
+              }
+      - type: custom:mushroom-template-card
+        entity: input_number.outdoor_temperature
+        primary: |
+          {{ states(entity) | round(1) }}°C 
+        secondary: |
+          Outdoor Feels Like
+        icon: "{{ states('sensor.weather_condition_icon') }}"
+        icon_color: grey
+  - type: custom:mini-graph-card
+    entities:
+      - entity: input_number.outdoor_temperature
+        color: grey
+      - entity: sensor.living_room_temperature
+        show_fill: true
+        state_adaptive_color: true
+    color_thresholds:
+      - value: 16
+        color: "#CEB2F5"
+      - value: 18
+        color: "#5EBDEE"
+      - value: 21
+        color: "#9cc8b8"
+      - value: 24
+        color: "#e7b562"
+      - value: 27
+        color: "#FF564B"
+      - value: 35
+        color: "#99332d"
+    hours_to_show: 24
+    line_width: 3
+    font_size: 50
+    animate: true
+    show:
+      name: false
+      icon: false
+      state: false
+      legend: false
+      fill: fade
+    card_mod:
+      style: |
+        ha-card {
+            border: none;
+          }
+card_mod:
+  style: |
+    ha-card {
+      --stack-card-gap: 0;
