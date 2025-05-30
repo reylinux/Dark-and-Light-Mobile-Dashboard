@@ -1,0 +1,62 @@
+type: custom:paper-buttons-row
+styles:
+  gap: 8px
+  justify-content: flex-start
+  overflow: scroll
+  margin: 12px 0 0 -18px
+  padding-left: 18px
+  width: calc(100% + 36px)
+extra_styles: |
+  ::-webkit-scrollbar {
+    display: none;
+  }
+buttons:
+  - entity: binary_sensor.presence_active_la
+    state_icons:
+      "on": mdi:motion-sensor
+      "off": mdi:motion-sensor-off
+    layout: icon_name
+    name: Presence Sensor
+    tap_action:
+      action: call-service
+      service: script.toggle_presence_sensor_la
+    styles:
+      name:
+        color: var(--gray800)
+      button:
+        padding: 12px
+        width: 76px
+        height: 76px
+        flex-basis: 1
+        flex-shrink: 0
+        display: flex
+        margin-right: 36px
+        background-color: var(--popupBG)
+        border-radius: 24px
+        color: var(--white)
+      icon:
+        "--mdc-icon-size": 26px
+        color: var(--gray800)
+  - layout: icon_name
+    image: /local/hue/Bahrain.jpeg
+    name: Bahrain Scene
+    tap_action:
+      action: call-service
+      service: script.bahrain_scene_la
+    styles:
+      name:
+        color: var(--gray800)
+      button:
+        padding: 12px
+        width: 76px
+        height: 76px
+        flex-basis: 1
+        flex-shrink: 0
+        display: flex
+        margin-right: 36px
+        background-color: var(--popupBG)
+        border-radius: 24px
+        color: var(--white)
+      icon:
+        "--mdc-icon-size": 26px
+        color: var(--gray800)
