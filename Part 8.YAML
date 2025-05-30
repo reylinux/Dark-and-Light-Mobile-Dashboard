@@ -1,0 +1,139 @@
+type: horizontal-stack
+cards:
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: light.lights_dt
+        state: "off"
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:button-card
+          entity: light.lights_dt
+          name: Dining Table
+          tap_action:
+            action: none
+          styles:
+            grid:
+              - grid-template-columns: 64px 1fr
+              - grid-template-areas: "\" i n \""
+            card:
+              - background: "#F4F3FA"
+              - height: 75px
+              - position: absolute
+              - z-index: 1
+            img_cell:
+              - width: 22px
+            icon:
+              - width: 22px
+              - color: "#000000"
+            name:
+              - justify-self: start
+              - font-size: 14px
+              - font-weight: 400
+              - color: "#000000"
+        - type: custom:my-slider-v2
+          entity: light.lights_dt
+          allowTapping: false
+          allowSliding: true
+          styles:
+            container:
+              - border-radius: 30px
+            card:
+              - margin-top: "-8px"
+              - height: 75px
+            progress:
+              - background: none
+            thumb:
+              - width: 3px
+              - height: 30%
+              - background: "#ffffff"
+              - border-radius: 5px
+              - top: 35%
+              - margin-right: 12x
+            track:
+              - background: none
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: light.lights_dt
+        state: "on"
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:button-card
+          entity: light.lights_dt
+          name: Dining Table
+          tap_action:
+            action: none
+          styles:
+            grid:
+              - grid-template-columns: 64px 1fr
+              - grid-template-areas: "\" i n \""
+            card:
+              - background: none
+              - height: 75px
+              - position: absolute
+              - z-index: 1
+            img_cell:
+              - width: 22px
+            icon:
+              - width: 22px
+              - color: "#ffffff"
+            name:
+              - justify-self: start
+              - font-size: 14px
+              - font-weight: 400
+              - color: "#ffffff"
+        - type: custom:my-slider-v2
+          entity: light.lights_dt
+          allowTapping: false
+          allowSliding: true
+          styles:
+            container:
+              - border-radius: 30px
+            card:
+              - margin-top: "-8px"
+              - height: 75px
+            progress:
+              - background: >-
+                  linear-gradient(145deg, rgba(164,164,164,1) 0%,
+                  rgba(255,215,86,1) 100%
+            thumb:
+              - width: 3px
+              - height: 30%
+              - background: "#ffffff"
+              - border-radius: 5px
+              - top: 35%
+              - margin-right: 12x
+            track:
+              - background: >-
+                  linear-gradient(145deg, rgba(0,0,0,1) 0%, rgba(255,232,157,1)
+                  100%)
+  - type: custom:button-card
+    entity: switch.kitchen_light
+    name: Kitchen
+    tap_action:
+      action: toggle
+    styles:
+      grid:
+        - grid-template-columns: 64px 1fr
+        - grid-template-areas: "\" i n \""
+      card:
+        - background: "#F4F3FA"
+        - height: 75px
+      img_cell:
+        - width: 22px
+      icon:
+        - width: 22px
+        - color: "#000000"
+      name:
+        - justify-self: start
+        - font-size: 14px
+        - font-weight: 400
+        - color: "#000000"
+    state:
+      - value: "on"
+        styles:
+          card:
+            - background: "#f3c843"
