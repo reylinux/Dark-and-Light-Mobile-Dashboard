@@ -1,0 +1,1160 @@
+type: horizontal-stack
+cards:
+  - type: custom:local-conditional-card
+    id: home
+    default: show
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:paper-buttons-row
+          styles:
+            background-color: "#EAE9EF"
+            border: 4px solid '#F4F3FA'
+            border-radius: 20px
+            justify-content: center
+            width: max-content
+            margin: 0 auto 12px auto
+          buttons:
+            - layout: name
+              name: Home
+              ripple: none
+              tap_action:
+                action: fire-dom-event
+                local_conditional_card:
+                  action: set
+                  ids:
+                    - home: show
+                    - environment: hide
+                    - active: hide
+              styles:
+                name:
+                  color: "#000000"
+                  padding: 0 22px
+                  font-weight: bold
+                button:
+                  background: "#F7F5FC"
+                  border-radius: 24px
+                  height: 24px
+                  display: flex
+            - layout: name
+              name: Environment
+              ripple: none
+              tap_action:
+                action: fire-dom-event
+                local_conditional_card:
+                  action: set
+                  ids:
+                    - home: hide
+                    - environment: show
+                    - active: hide
+              styles:
+                name:
+                  color: "#000000"
+                  padding: 0 22px
+                button:
+                  background: none
+                  border-radius: 24px
+                  height: 24px
+                  display: flex
+            - layout: name
+              name: Active
+              ripple: none
+              tap_action:
+                action: fire-dom-event
+                local_conditional_card:
+                  action: set
+                  ids:
+                    - home: hide
+                    - environment: hide
+                    - active: show
+              styles:
+                name:
+                  color: "#000000"
+                  padding: 0 22px
+                button:
+                  background: none
+                  border-radius: 24px
+                  height: 24px
+                  display: flex
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: switch.all_water_taps
+              state: "on"
+          card:
+            type: custom:simple-swipe-card
+            cards:
+              - type: custom:vertical-stack-in-card
+                cards:
+                  - type: grid
+                    square: false
+                    columns: 2
+                    cards:
+                      - type: custom:mushroom-template-card
+                        entity: sensor.house_average_temperature
+                        primary: |
+                          {{ states(entity) | round(1) }}°C 
+                        secondary: |
+                          {{ state_attr(entity,'friendly_name') }} 
+                        icon: |
+                          {% set hvac_mode = states('climate.heat_pump') %}
+                          {% if hvac_mode == 'heat' %} mdi:fire
+                          {% elif hvac_mode == 'cool' %} mdi:snowflake
+                          {% elif hvac_mode == 'fan_only' %} mdi:fan
+                          {% else %} mdi:thermometer
+                          {% endif %}
+                        icon_color: |
+                          {% set hvac_mode = states('climate.heat_pump') %}
+                          {% if hvac_mode == 'heat' %} #FF6F22
+                          {% elif hvac_mode == 'cool' %} #12c8da
+                          {% elif hvac_mode == 'fan_only' %} #029688
+                          {% else %}
+                            {% set temp = states('sensor.house_average_temperature') | float %}
+                            {% if temp < 16 %} #CEB2F5
+                            {% elif temp < 18 %} #5EBDEE
+                            {% elif temp < 22 %} #9cc8b8
+                            {% elif temp < 24 %} #e7b562
+                            {% elif temp < 27 %} #FF564B
+                            {% else %} #99332d
+                            {% endif %}
+                          {% endif %}
+                        tap_action:
+                          action: navigate
+                          navigation_path: /mobile-dark/room
+                      - type: custom:mushroom-template-card
+                        entity: input_number.outdoor_temperature
+                        primary: |
+                          {{ states(entity) | round(1) }}°C 
+                        secondary: |
+                          Outdoor Feels Like
+                        icon: "{{ states('sensor.weather_condition_icon') }}"
+                        icon_color: >
+                          {% set temp =
+                          states('input_number.outdoor_temperature') | float %}
+
+                          {% if temp < 16 %} #907CAB
+
+                          {% elif temp < 18 %} #4790b6
+
+                          {% elif temp < 22 %} #77998c
+
+                          {% elif temp < 24 %} #b08a4a
+
+                          {% elif temp < 27 %} #c34139      
+
+                          {% else %} #752722 {% endif %}
+                        tap_action:
+                          action: navigate
+                          navigation_path: /mobile-dark/room
+                  - type: custom:config-template-card
+                    entities:
+                      - sensor.house_average_temperature
+                      - input_number.outdoor_temperature
+                      - climate.heat_pump
+                    variables:
+                      - states['climate.heat_pump'].state
+                      - states['sensor.house_average_temperature'].state
+                      - states['input_number.outdoor_temperature'].state
+                    card:
+                      type: custom:mini-graph-card
+                      entities:
+                        - entity: sensor.house_average_temperature
+                          name: House Average Temperature
+                          color: |-
+                            ${vars[0] === 'heat' ? '#FF6F22' : 
+                              (vars[0] === 'cool' ? '#12c8da' : 
+                              (vars[0] === 'fan_only' ? '#029688' : 
+                              (vars[1] < 16 ? '#CEB2F5' :
+                              (vars[1] < 18 ? '#5EBDEE' :
+                              (vars[1] < 22 ? '#9cc8b8' :
+                              (vars[1] < 24 ? '#e7b562' :
+                              (vars[1] < 27 ? '#FF564B' : '#99332d')))))))}
+                        - entity: input_number.outdoor_temperature
+                          name: Outdoor Temperature
+                          color: |-
+                            ${vars[2] < 16 ? '#907CAB' :
+                              (vars[2] < 18 ? '#4790b6' :        
+                              (vars[2] < 22 ? '#77998c' :
+                              (vars[2] < 24 ? '#b08a4a' :
+                              (vars[2] < 27 ? '#c34139' :'#752722'))))}
+                          y_axis: secondary
+                      hours_to_show: 24
+                      line_width: 3
+                      font_size: 50
+                      animate: true
+                      show:
+                        name: false
+                        icon: false
+                        state: false
+                        legend: false
+                        fill: fade
+                  - type: horizontal-stack
+                    cards:
+                      - type: custom:mushroom-climate-card
+                        entity: climate.heat_pump
+                        primary_info: none
+                        secondary_info: none
+                        icon_type: none
+                        show_temperature_control: true
+                      - type: custom:mushroom-climate-card
+                        entity: climate.heat_pump
+                        primary_info: none
+                        secondary_info: none
+                        icon_type: none
+                        hvac_modes:
+                          - cool
+                          - heat
+                          - fan_only
+                          - "off"
+              - type: custom:vertical-stack-in-card
+                cards:
+                  - type: grid
+                    square: false
+                    columns: 2
+                    cards:
+                      - type: custom:mushroom-template-card
+                        entity: sensor.right_walkway_water_tap_flow
+                        primary: |
+                          {{ states(entity) | round(1) }} m³/h
+                        secondary: Water Flow Rate
+                        icon: mdi:water
+                        icon_color: >
+                          {% set flow =
+                          states('sensor.right_walkway_water_tap_flow') | float
+                          %}
+
+                          {% if flow < 0.1 %} #A9A9A9
+
+                          {% elif flow < 0.3 %} #ffd34f
+
+                          {% elif flow < 0.5 %} #9fe7e8   
+
+                          {% else %} #36a9e2
+
+                          {% endif %}
+                        tap_action:
+                          action: none
+                  - type: custom:config-template-card
+                    entities: sensor.right_walkway_water_tap_flow
+                    variables:
+                      - states['sensor.right_walkway_water_tap_flow'].state
+                    card:
+                      type: custom:mini-graph-card
+                      entities:
+                        - entity: sensor.right_walkway_water_tap_flow
+                          name: Water Flow
+                          color: |-
+                            ${vars[0] < 0.1 ? '#a9a9a9' :     
+                              (vars[0] < 0.3 ? '#ffd34f' :
+                              (vars[0] < 0.5 ? '#9fe7e8' : '#36a9e2'))}
+                      hours_to_show: 24
+                      line_width: 3
+                      font_size: 50
+                      animate: true
+                      show:
+                        name: false
+                        icon: false
+                        state: false
+                        legend: false
+                        fill: fade
+                  - type: horizontal-stack
+                    cards:
+                      - type: custom:mushroom-entity-card
+                        entity: input_boolean.no_water_restriction
+                        secondary_info: none
+                        primary_info: none
+                        tap_action:
+                          action: toggle
+                        card_mod:
+                          style:
+                            mushroom-shape-icon$: |
+                              .shape {
+                                --shape-color: {{ '#6f9c3d' if states('input_boolean.no_water_restriction') == 'on' else 'white' }} !important;
+                              }
+                            .: |
+                              ha-state-icon {
+                                color: {{ 'white' if states('input_boolean.no_water_restriction') == 'on' else 'none' }};
+                              }
+                      - type: custom:mushroom-entity-card
+                        entity: input_boolean.water_level_1
+                        secondary_info: none
+                        primary_info: none
+                        tap_action:
+                          action: toggle
+                        card_mod:
+                          style:
+                            mushroom-shape-icon$: |
+                              .shape {
+                                --shape-color: {{ '#a5c90f' if states('input_boolean.water_level_1') == 'on' else 'white' }} !important;
+                              }
+                            .: |
+                              ha-state-icon {
+                                color: {{ 'white' if states('input_boolean.water_level_1') == 'on' else 'none' }};
+                              }
+                      - type: custom:mushroom-entity-card
+                        entity: input_boolean.water_level_2
+                        secondary_info: none
+                        primary_info: none
+                        tap_action:
+                          action: toggle
+                        card_mod:
+                          style:
+                            mushroom-shape-icon$: |
+                              .shape {
+                                --shape-color: {{ '#ffb366' if states('input_boolean.water_level_2') == 'on' else 'white' }} !important;
+                              }
+                            .: |
+                              ha-state-icon {
+                                color: {{ 'white' if states('input_boolean.water_level_2') == 'on' else 'none' }};
+                              }
+                      - type: custom:mushroom-entity-card
+                        entity: input_boolean.water_level_3
+                        secondary_info: none
+                        primary_info: none
+                        tap_action:
+                          action: toggle
+                        card_mod:
+                          style:
+                            mushroom-shape-icon$: |
+                              .shape {
+                                --shape-color: {{ '#ff8829' if states('input_boolean.water_level_3') == 'on' else 'white' }} !important;
+                              }
+                            .: |
+                              ha-state-icon {
+                                color: {{ 'white' if states('input_boolean.water_level_3') == 'on' else 'none' }};
+                              }
+                      - type: custom:mushroom-entity-card
+                        entity: input_boolean.water_level_4
+                        primary_info: none
+                        secondary_info: none
+                        tap_action:
+                          action: toggle
+                        card_mod:
+                          style:
+                            mushroom-shape-icon$: |
+                              .shape {
+                                --shape-color: {{ '#fe6b40' if states('input_boolean.water_level_4') == 'on' else 'white' }} !important;
+                              }
+                            .: |
+                              ha-state-icon {
+                                color: {{ 'white' if states('input_boolean.water_level_4') == 'on' else 'none' }};
+                              }
+            show_pagination: true
+            card_spacing: 15
+        - type: conditional
+          conditions:
+            - condition: state
+              entity: switch.all_water_taps
+              state: "off"
+          card:
+            type: custom:vertical-stack-in-card
+            cards:
+              - type: grid
+                square: false
+                columns: 2
+                cards:
+                  - type: custom:mushroom-template-card
+                    entity: sensor.house_average_temperature
+                    primary: |
+                      {{ states(entity) | round(1) }}°C 
+                    secondary: |
+                      {{ state_attr(entity,'friendly_name') }} 
+                    icon: |
+                      {% set hvac_mode = states('climate.heat_pump') %}
+                      {% if hvac_mode == 'heat' %} mdi:fire
+                      {% elif hvac_mode == 'cool' %} mdi:snowflake
+                      {% elif hvac_mode == 'fan_only' %} mdi:fan
+                      {% else %} mdi:thermometer
+                      {% endif %}
+                    icon_color: |
+                      {% set hvac_mode = states('climate.heat_pump') %}
+                      {% if hvac_mode == 'heat' %} #FF6F22
+                      {% elif hvac_mode == 'cool' %} #12c8da
+                      {% elif hvac_mode == 'fan_only' %} #029688
+                      {% else %}
+                        {% set temp = states('sensor.house_average_temperature') | float %}
+                        {% if temp < 16 %} #CEB2F5
+                        {% elif temp < 18 %} #5EBDEE
+                        {% elif temp < 22 %} #9cc8b8
+                        {% elif temp < 24 %} #e7b562
+                        {% elif temp < 27 %} #FF564B
+                        {% else %} #99332d
+                        {% endif %}
+                      {% endif %}
+                    tap_action:
+                      action: navigate
+                      navigation_path: /mobile-dark/room
+                  - type: custom:mushroom-template-card
+                    entity: input_number.outdoor_temperature
+                    primary: |
+                      {{ states(entity) | round(1) }}°C 
+                    secondary: |
+                      Outdoor Feels Like
+                    icon: "{{ states('sensor.weather_condition_icon') }}"
+                    icon_color: >
+                      {% set temp = states('input_number.outdoor_temperature') |
+                      float %}
+
+                      {% if temp < 16 %} #907CAB
+
+                      {% elif temp < 18 %} #4790b6
+
+                      {% elif temp < 22 %} #77998c
+
+                      {% elif temp < 24 %} #b08a4a
+
+                      {% elif temp < 27 %} #c34139      
+
+                      {% else %} #752722 {% endif %}
+                    tap_action:
+                      action: navigate
+                      navigation_path: /mobile-dark/room
+              - type: custom:config-template-card
+                entities:
+                  - sensor.house_average_temperature
+                  - input_number.outdoor_temperature
+                  - climate.heat_pump
+                variables:
+                  - states['climate.heat_pump'].state
+                  - states['sensor.house_average_temperature'].state
+                  - states['input_number.outdoor_temperature'].state
+                card:
+                  type: custom:mini-graph-card
+                  entities:
+                    - entity: sensor.house_average_temperature
+                      name: House Average Temperature
+                      color: |-
+                        ${vars[0] === 'heat' ? '#FF6F22' : 
+                          (vars[0] === 'cool' ? '#12c8da' : 
+                          (vars[0] === 'fan_only' ? '#029688' : 
+                          (vars[1] < 16 ? '#CEB2F5' :
+                          (vars[1] < 18 ? '#5EBDEE' :
+                          (vars[1] < 22 ? '#9cc8b8' :
+                          (vars[1] < 24 ? '#e7b562' :
+                          (vars[1] < 27 ? '#FF564B' : '#99332d')))))))}
+                    - entity: input_number.outdoor_temperature
+                      name: Outdoor Temperature
+                      color: |-
+                        ${vars[2] < 16 ? '#907CAB' :
+                          (vars[2] < 18 ? '#4790b6' :        
+                          (vars[2] < 22 ? '#77998c' :
+                          (vars[2] < 24 ? '#b08a4a' :
+                          (vars[2] < 27 ? '#c34139' :'#752722'))))}
+                      y_axis: secondary
+                  hours_to_show: 24
+                  line_width: 3
+                  font_size: 50
+                  animate: true
+                  show:
+                    name: false
+                    icon: false
+                    state: false
+                    legend: false
+                    fill: fade
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-climate-card
+                    entity: climate.heat_pump
+                    primary_info: none
+                    secondary_info: none
+                    icon_type: none
+                    show_temperature_control: true
+                  - type: custom:mushroom-climate-card
+                    entity: climate.heat_pump
+                    primary_info: none
+                    secondary_info: none
+                    icon_type: none
+                    hvac_modes:
+                      - cool
+                      - heat
+                      - fan_only
+                      - "off"
+        - type: custom:simple-swipe-card
+          cards:
+            - type: custom:vertical-stack-in-card
+              cards:
+                - type: custom:mushroom-template-card
+                  primary: Scenes
+                  layout: horizontal
+                  tap_action:
+                    action: none
+                  hold_action:
+                    action: none
+                  double_tap_action:
+                    action: none
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: transparent !important;
+                        box-shadow: none !important;
+                      }
+                      .card-content {
+                        background: transparent !important;
+                      }
+                - type: custom:mushroom-chips-card
+                  chips:
+                    - type: template
+                      entity: input_boolean.climate_no_guest
+                      icon: mdi:account
+                      icon_color: |-
+                        {% if is_state(entity, 'on') %} 
+                          #0CC078
+                        {% else %}
+                         grey
+                        {% endif %}
+                      tap_action:
+                        action: toggle
+                      content: |-
+                        {% if is_state(entity, 'on') %} 
+                          No Guest
+                        {% else %}
+                        {% endif %}
+                    - type: template
+                      entity: input_boolean.climate_single_guest
+                      icon: mdi:account-plus
+                      icon_color: |-
+                        {% if is_state(entity, 'on') %} 
+                          orange
+                        {% else %}
+                         grey
+                        {% endif %}
+                      tap_action:
+                        action: toggle
+                      content: |-
+                        {% if is_state(entity, 'on') %} 
+                          Single Guest
+                        {% else %}
+                        {% endif %}
+                    - type: template
+                      entity: input_boolean.climate_multiple_guest
+                      icon: mdi:account-group
+                      icon_color: |-
+                        {% if is_state(entity, 'on') %} 
+                          #FB6962
+                        {% else %}
+                         grey
+                        {% endif %}
+                      tap_action:
+                        action: toggle
+                      content: |-
+                        {% if is_state(entity, 'on') %} 
+                          Multiple Guest
+                        {% else %}
+                        {% endif %}      
+                    - type: template
+                      entity: input_boolean.night_car_wash
+                      icon: mdi:car-wash
+                      icon_color: |-
+                        {% if is_state(entity, 'on') %} 
+                         #48AAAD
+                        {% else %}
+                         grey
+                        {% endif %}
+                      tap_action:
+                        action: toggle
+                      content: |-
+                        {% if is_state(entity, 'on') %} 
+                          Night Car Wash
+                        {% else %}
+                        {% endif %}      
+                    - type: template
+                      entity: input_boolean.party_mode
+                      icon: mdi:party-popper
+                      icon_color: |-
+                        {% if is_state(entity, 'on') %} 
+                         #ca5cdd
+                        {% else %}
+                         grey
+                        {% endif %}
+                      tap_action:
+                        action: toggle
+                      content: |-
+                        {% if is_state(entity, 'on') %} 
+                          Party Mode
+                        {% else %}
+                        {% endif %}
+                  alignment: start
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: transparent !important;
+                        box-shadow: none !important;
+                      }
+                      .chip-container {
+                        background: transparent !important;
+                      }
+              card_mod:
+                style: |
+                  ha-card {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                    margin-top: 10px !important;
+                  }
+            - type: custom:vertical-stack-in-card
+              cards:
+                - type: custom:mushroom-template-card
+                  primary: Presence Status
+                  layout: horizontal
+                  tap_action:
+                    action: none
+                  hold_action:
+                    action: none
+                  double_tap_action:
+                    action: none
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: transparent !important;
+                        box-shadow: none !important;
+                      }
+                      .card-content {
+                        background: transparent !important;
+                      }
+                - type: custom:mushroom-chips-card
+                  chips:
+                    - type: template
+                      entity: binary_sensor.presence_active_la
+                      icon: mdi:sofa
+                      icon_color: |-
+                        {% if is_state(entity, 'on') %} 
+                        {% else %}
+                         grey
+                        {% endif %}
+                      tap_action:
+                        action: perform-action
+                        perform_action: script.toggle_presence_sensor_la
+                        target: {}
+                      content: |-
+                        {% if is_state(entity, 'on') %} 
+                          Living Area
+                        {% else %}
+                        {% endif %}
+                    - type: template
+                      entity: automation.room_presence_mbr
+                      icon: mdi:bed-king
+                      icon_color: |-
+                        {% if is_state(entity, 'on') %} 
+                        {% else %}
+                         grey
+                        {% endif %}
+                      tap_action:
+                        action: toggle
+                      content: |-
+                        {% if is_state(entity, 'on') %} 
+                          Master Bedroom
+                        {% else %}
+                        {% endif %}
+                    - type: template
+                      entity: automation.room_presence_br
+                      icon: mdi:baby-carriage
+                      icon_color: |-
+                        {% if is_state(entity, 'on') %} 
+                        {% else %}
+                         grey
+                        {% endif %}
+                      tap_action:
+                        action: toggle
+                      content: |-
+                        {% if is_state(entity, 'on') %} 
+                          Baby Room
+                        {% else %}
+                        {% endif %}      
+                    - type: template
+                      entity: automation.room_presence_sgr
+                      icon: mdi:account-plus
+                      icon_color: |-
+                        {% if is_state(entity, 'on') %} 
+                        {% else %}
+                         grey
+                        {% endif %}
+                      tap_action:
+                        action: toggle
+                      content: |-
+                        {% if is_state(entity, 'on') %} 
+                          Single Guest Room
+                        {% else %}
+                        {% endif %}
+                  alignment: start
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: transparent !important;
+                        box-shadow: none !important;
+                      }
+                      .chip-container {
+                        background: transparent !important;
+                      }
+              card_mod:
+                style: |
+                  ha-card {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                  }
+          show_pagination: true
+          card_spacing: 15
+          enable_loopback: false
+          swipe_direction: horizontal
+          enable_auto_swipe: false
+          auto_swipe_interval: 2000
+        - type: custom:calendar-card-pro
+          entities:
+            - entity: calendar.your_calendar_here
+              accent_color: "#FC6D85"
+            - entity: calendar.your_calendar_here
+              accent_color: "#71C8FE"
+          days_to_show: 10
+          compact_events_to_show: 10
+          background_color: transparent
+          vertical_line_width: 5px
+          event_spacing: 6px
+          first_day_of_week: monday
+          show_week_numbers: iso
+          month_separator_width: 3px
+          month_separator_color: "#E5E4E2"
+          show_progress_bar: true
+          weather:
+            position: event
+            date:
+              show_conditions: true
+              show_high_temp: true
+              show_low_temp: false
+              icon_size: 14px
+              font_size: 12px
+              color: var(--primary-text-color)
+            event:
+              show_conditions: true
+              show_temp: true
+              icon_size: 14px
+              font_size: 12px
+              color: var(--primary-text-color)
+            entity: weather.forecast_home
+          tap_action:
+            action: expand
+    hide_in_preview: true
+  - type: custom:local-conditional-card
+    id: environment
+    default: hide
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:paper-buttons-row
+          styles:
+            background-color: "#EAE9EF"
+            border: 4px solid '#F4F3FA'
+            border-radius: 20px
+            justify-content: center
+            width: max-content
+            margin: 0 auto 12px auto
+          buttons:
+            - layout: name
+              name: Home
+              ripple: none
+              tap_action:
+                action: fire-dom-event
+                local_conditional_card:
+                  action: set
+                  ids:
+                    - home: show
+                    - environment: hide
+                    - active: hide
+              styles:
+                name:
+                  color: "#000000"
+                  padding: 0 22px
+                button:
+                  background: none
+                  border-radius: 24px
+                  height: 24px
+                  display: flex
+            - layout: name
+              name: Environment
+              ripple: none
+              tap_action:
+                action: fire-dom-event
+                local_conditional_card:
+                  action: set
+                  ids:
+                    - home: hide
+                    - environment: show
+                    - active: hide
+              styles:
+                name:
+                  color: "#000000"
+                  padding: 0 22px
+                  font-weight: bold
+                button:
+                  background: "#F7F5FC"
+                  border-radius: 24px
+                  height: 24px
+                  display: flex
+            - layout: name
+              name: Active
+              ripple: none
+              tap_action:
+                action: fire-dom-event
+                local_conditional_card:
+                  action: set
+                  ids:
+                    - home: hide
+                    - environment: hide
+                    - active: show
+              styles:
+                name:
+                  color: "#000000"
+                  padding: 0 22px
+                button:
+                  background: none
+                  border-radius: 24px
+                  height: 24px
+                  display: flex
+        - type: custom:simple-swipe-card
+          cards:
+            - type: custom:apexcharts-card
+              graph_span: 6h
+              header:
+                show_states: false
+                title: Room Temperature
+                standard_format: true
+                show: true
+              experimental:
+                color_threshold: true
+              all_series_config:
+                float_precision: 1
+                stroke_width: 2
+                show:
+                  extremas: true
+              apex_config:
+                yaxis:
+                  decimalsInFloat: 0
+                xaxis:
+                  labels:
+                    format: HH:00
+                grid:
+                  show: false
+                legend:
+                  show: true
+                chart:
+                  zoom:
+                    enabled: true
+                  toolbar:
+                    show: true
+                    tools:
+                      zoom: true
+                      zoomin: true
+                      zoomout: true
+                      pan: true
+                      reset: true
+                  height: 275px
+              series:
+                - entity: sensor.living_room_temperature
+                  name: Living Area
+                  type: area
+                  opacity: 0
+                  color: "#A9A9A9"
+                - entity: sensor.master_bedroom_temperature
+                  name: Master
+                  type: area
+                  opacity: 0
+                  color: "#4285F4"
+                  curve: smooth
+                - entity: sensor.baby_room_temperature
+                  name: Baby
+                  type: area
+                  opacity: 0
+                  color: "#34a853"
+                  curve: smooth
+                - entity: sensor.single_guest_room_temperature
+                  name: Single Guest
+                  type: area
+                  opacity: 0
+                  color: "#fbbc05"
+                  curve: smooth
+                - entity: sensor.multiple_guest_room_temperature
+                  name: Multiple Guest
+                  type: area
+                  opacity: 0
+                  color: "#ea4335"
+                  curve: smooth
+            - type: custom:apexcharts-card
+              graph_span: 6h
+              header:
+                show_states: false
+                title: Room Humidity
+                standard_format: true
+                show: true
+              experimental:
+                color_threshold: true
+              all_series_config:
+                float_precision: 1
+                stroke_width: 2
+                show:
+                  extremas: true
+              apex_config:
+                yaxis:
+                  decimalsInFloat: 0
+                xaxis:
+                  labels:
+                    format: HH:00
+                grid:
+                  show: false
+                legend:
+                  show: true
+                chart:
+                  zoom:
+                    enabled: true
+                  toolbar:
+                    show: true
+                    tools:
+                      zoom: true
+                      zoomin: true
+                      zoomout: true
+                      pan: true
+                      reset: true
+                  height: 275px
+              series:
+                - entity: sensor.living_area_humidity
+                  name: Living Area
+                  type: area
+                  opacity: 0
+                  color: "#A9A9A9"
+                - entity: sensor.master_bedroom_humidity
+                  name: Master
+                  type: area
+                  opacity: 0
+                  color: "#4285F4"
+                  curve: smooth
+                - entity: sensor.baby_room_humidity
+                  name: Baby
+                  type: area
+                  opacity: 0
+                  color: "#34a853"
+                  curve: smooth
+                - entity: sensor.single_guest_room_humidity
+                  name: Single Guest
+                  type: area
+                  opacity: 0
+                  color: "#fbbc05"
+                  curve: smooth
+                - entity: sensor.multiple_guest_room_humidity
+                  name: Multiple Guest
+                  type: area
+                  opacity: 0
+                  color: "#ea4335"
+                  curve: smooth
+          show_pagination: true
+          card_spacing: 15
+    hide_in_preview: true
+  - type: custom:local-conditional-card
+    id: active
+    default: hide
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:paper-buttons-row
+          styles:
+            background-color: "#EAE9EF"
+            border: 4px solid '#F4F3FA'
+            border-radius: 20px
+            justify-content: center
+            width: max-content
+            margin: 0 auto 12px auto
+          buttons:
+            - layout: name
+              name: Home
+              ripple: none
+              tap_action:
+                action: fire-dom-event
+                local_conditional_card:
+                  action: set
+                  ids:
+                    - home: show
+                    - environment: hide
+                    - active: hide
+              styles:
+                name:
+                  color: "#000000"
+                  padding: 0 22px
+                button:
+                  background: none
+                  border-radius: 24px
+                  height: 24px
+                  display: flex
+            - layout: name
+              name: Environment
+              ripple: none
+              tap_action:
+                action: fire-dom-event
+                local_conditional_card:
+                  action: set
+                  ids:
+                    - home: hide
+                    - environment: show
+                    - active: hide
+              styles:
+                name:
+                  color: "#000000"
+                  padding: 0 22px
+                button:
+                  background: none
+                  border-radius: 24px
+                  height: 24px
+                  display: flex
+            - layout: name
+              name: Active
+              ripple: none
+              tap_action:
+                action: fire-dom-event
+                local_conditional_card:
+                  action: set
+                  ids:
+                    - home: hide
+                    - environment: hide
+                    - active: show
+              styles:
+                name:
+                  color: "#000000"
+                  font-weight: bold
+                  padding: 0 22px
+                button:
+                  background: "#F7F5FC"
+                  border-radius: 24px
+                  height: 24px
+                  display: flex
+        - type: custom:auto-entities
+          card:
+            square: false
+            type: grid
+            columns: 2
+            title: Climate
+          card_param: cards
+          filter:
+            include:
+              - group: group.climate
+                state: heat_cool
+                options:
+                  type: custom:mushroom-template-card
+                  primary: "{{ state_attr(config.entity, 'friendly_name') }} "
+                  icon: "{{ state_attr(config.entity, 'icon') }}"
+                  icon_color: |
+                    {% if is_state('climate.heat_pump', 'heat') %}
+                      white
+                    {% elif is_state('climate.heat_pump', 'cool') %}
+                      black
+                    {% elif is_state('climate.heat_pump', 'fan_only') %}
+                      white
+                    {% else %}
+                      white
+                    {% endif %}
+                  layout: vertical
+                  card_mod:
+                    style:
+                      mushroom-shape-icon$: |
+                        .shape {
+                          --shape-color:
+                          {% if is_state('climate.heat_pump', 'heat') %}
+                            #900d09
+                          {% elif is_state('climate.heat_pump', 'cool') %}
+                            #12c8da
+                          {% elif is_state('climate.heat_pump', 'fan_only') %}
+                            #029688
+                          {% else %}
+                            grey
+                          {% endif %};
+                        }
+            exclude: []
+          show_empty: false
+          sort:
+            method: entity_id
+        - type: custom:auto-entities
+          card:
+            square: false
+            type: grid
+            title: Lights
+            columns: 2
+          card_param: cards
+          filter:
+            include:
+              - group: light.all_lights
+                state: "on"
+                options:
+                  type: custom:mushroom-light-card
+                  use_light_color: true
+                  show_brightness_control: true
+                  show_color_control: true
+                  layout: vertical
+            exclude: []
+          show_empty: false
+          sort:
+            method: entity_id
+        - type: custom:auto-entities
+          card:
+            square: false
+            type: grid
+            columns: 3
+            title: Light Switches
+          card_param: cards
+          filter:
+            include:
+              - group: switch.all_light_switches
+                state: "on"
+                options:
+                  type: custom:mushroom-template-card
+                  primary: "{{ state_attr(config.entity, 'friendly_name') }}"
+                  icon: "{{ state_attr(config.entity, 'icon') }}"
+                  icon_color: "#FFBF00"
+                  layout: vertical
+                  card_mod:
+                    style:
+                      mushroom-shape-icon$: |
+                        .shape {
+                          --shape-color: #EEDC82 !important;
+                        }
+                      ha-state-icon: |
+                        ha-state-icon {
+                          color: black
+                        }
+            exclude: []
+          show_empty: false
+          sort:
+            method: entity_id
+        - type: custom:auto-entities
+          card:
+            square: false
+            type: grid
+            columns: 2
+            title: Fans
+          card_param: cards
+          filter:
+            include:
+              - group: fan.all_fans
+                state: "on"
+                options:
+                  type: custom:mushroom-template-card
+                  primary: "{{ state_attr(config.entity, 'friendly_name') }}"
+                  icon: mdi:fan
+                  icon_color: black
+                  layout: vertical
+                  card_mod:
+                    style:
+                      mushroom-shape-icon$: |
+                        .shape {
+                            --shape-animation: spin 1s linear infinite;
+                            --shape-color: #b5e0f7;
+                        }
+                      .: |
+                        ha-card {
+                          height: 113px !important;
+                          }
+                        ha-state-icon {
+                          color: #6082B6;
+                          }
+            exclude: []
+          show_empty: false
+          sort:
+            method: friendly_name
+    hide_in_preview: true
+card_mod:
+  style: |
+    ha-card {
+      margin-top: 10px !important;
+    }
