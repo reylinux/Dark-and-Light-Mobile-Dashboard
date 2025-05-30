@@ -1,0 +1,74 @@
+type: custom:navbar-card
+mobile:
+  show_labels: true
+desktop:
+  show_labels: true
+  position: left
+  min_width: 768
+routes:
+  - url: /mobile-light/overview
+    label: Home
+    icon: mdi:home-outline
+    icon_selected: mdi:home
+  - url: /mobile-light/room
+    label: Rooms
+    icon: mdi:sofa-outline
+    tap_action:
+      action: navigate
+      navigation_path: /mobile-light/room
+    hold_action:
+      action: open-popup
+    popup:
+      - icon: mdi:garage-variant
+        url: /mobile-light/garage-room-details
+      - icon: mdi:sofa
+        url: /mobile-light/living-area-room-details
+      - icon: mdi:bed-king
+        url: /mobile-light/master-bedroom-details
+      - icon: mdi:baby-carriage
+        url: /mobile-light/baby-room-details
+      - icon: mdi:account-plus
+        url: /mobile-light/single-guest-room-details
+      - icon: mdi:account-group
+        url: /mobile-light/multiple-guest-room-details
+      - icon: mdi:washing-machine
+        url: /mobile-light/laundry-room-details
+      - icon: mdi:desktop-tower-monitor
+        url: /mobile-light/office-room-details
+  - url: /mobile-light/scenes
+    label: Scenes
+    icon: mdi:layers-outline
+  - url: /mobile-light/camera
+    label: Camera
+    icon: mdi:camera-outline
+  - icon: mdi:dots-horizontal
+    label: More
+    tap_action:
+      action: open-popup
+    popup:
+      - icon: mdi:cog
+        url: /config/dashboard
+      - icon: mdi:hammer
+        url: /developer-tools/yaml
+      - icon: mdi:power
+        tap_action:
+          action: call-service
+          service: homeassistant.restart
+          service_data: {}
+          confirmation:
+            text: Are you sure you want to restart Home Assistant?
+styles: |
+  .navbar {
+    background: var(--nav-background);
+    backdrop-filter: blur(100px);
+    -webkit-backdrop-filter: blur(33px) !important;
+    background-blend-mode: overlay;
+    border-radius: 20px; /* Add rounded corners */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    overflow: hidden; /* Hide any overflow caused by rounded corners */
+  }
+
+  .navbar {
+    --navbar-primary-color: #5d5d5f;
+  }
