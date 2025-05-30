@@ -1,0 +1,50 @@
+type: custom:simple-swipe-card
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: picture
+            entity: script.rolling_hills_scene_la
+            image: /local/hue/raw/Rolling hills.jpeg
+            tap_action:
+              action: toggle
+              rows: auto
+          - type: picture
+            image: /local/hue/palette/Rolling hills - Palette.png
+      - type: vertical-stack
+        cards:
+          - type: picture
+            entity: script.dreamy_dusk_scene_la
+            image: /local/hue/raw/Dreamy dusk.jpeg
+            tap_action:
+              action: toggle
+          - type: picture
+            image: /local/hue/palette/Dreamy dusk - Palette.png
+  - type: horizontal-stack
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: picture
+            entity: script.savannah_sunset_scene_la
+            image: /local/hue/raw/Savanna sunset.jpg
+            tap_action:
+              action: toggle
+              rows: auto
+          - type: picture
+            image: /local/hue/palette/Savanna sunset - Palette.png
+      - type: vertical-stack
+        cards:
+          - type: picture
+            entity: script.ruby_glow_scene_la
+            image: /local/hue/raw/Ruby glow.jpg
+            tap_action:
+              action: toggle
+          - type: picture
+            image: /local/hue/palette/Ruby glow - Palette.png
+show_pagination: true
+card_spacing: 15
+enable_loopback: false
+swipe_direction: horizontal
+enable_auto_swipe: false
+auto_swipe_interval: 2000
