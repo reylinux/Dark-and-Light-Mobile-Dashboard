@@ -1,0 +1,21 @@
+type: conditional
+conditions:
+  - entity: media_player.master_bedroom_speaker
+    state: playing
+card:
+  type: custom:mushroom-template-card
+  entity: media_player.master_bedroom_speaker
+  primary: |
+    {{ state_attr(entity, 'friendly_name') }}
+  secondary: |
+    {% if is_state(entity, 'playing') %}
+      {{ state_attr(entity, 'media_title') }} – {{ state_attr(entity, 'media_artist') }}
+    {% else %}
+      {{ states(entity) | capitalize }}
+    {% endif %}
+  picture: |
+    {% if state_attr(entity, 'entity_picture') %}
+      {{ state_attr(entity, 'entity_picture') }}
+    {% endif %}
+  tap_action:
+    action: more-info
