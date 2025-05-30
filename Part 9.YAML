@@ -1,0 +1,104 @@
+type: custom:expander-card
+title-card-clickable: true
+title-card-button-overlay: true
+expanded: false
+padding: 1em
+child-margin-top: 0.6em
+title-card:
+  type: custom:mushroom-template-card
+  icon: mdi:lightbulb-on-10
+  icon_color: Black
+  primary: Other Lights
+  secondary: Tap here to expand
+  layout: horizontal
+  tap_action:
+    action: none
+cards:
+  - type: vertical-stack
+    cards:
+      - type: custom:button-card
+        entity: light.light_scr
+        icon: mdi:cookie-outline
+        name: Scullery
+        tap_action:
+          action: toggle
+        styles:
+          grid:
+            - grid-template-columns: 64px 1fr
+            - grid-template-areas: "\" i n \""
+          card:
+            - background: "#F4F3FA"
+            - height: 75px
+          img_cell:
+            - width: 22px
+          icon:
+            - width: 22px
+            - color: "#000000"
+          name:
+            - justify-self: start
+            - font-size: 14px
+            - font-weight: 400
+            - color: "#000000"
+        state:
+          - value: "on"
+            styles:
+              card:
+                - background: "#f3c843"
+      - type: horizontal-stack
+        cards:
+          - type: custom:button-card
+            entity: switch.patio_main_switch_la
+            icon: mdi:outdoor-lamp
+            name: Main Patio
+            tap_action:
+              action: toggle
+            styles:
+              grid:
+                - grid-template-columns: 64px 1fr
+                - grid-template-areas: "\" i n \""
+              card:
+                - background: "#F4F3FA"
+                - height: 75px
+              img_cell:
+                - width: 22px
+              icon:
+                - width: 22px
+                - color: "#000000"
+              name:
+                - justify-self: start
+                - font-size: 14px
+                - font-weight: 400
+                - color: "#000000"
+            state:
+              - value: "on"
+                styles:
+                  card:
+                    - background: "#f3c843"
+          - type: custom:button-card
+            entity: switch.patio_side_switch_la
+            icon: mdi:outdoor-lamp
+            name: Side Patio
+            tap_action:
+              action: toggle
+            styles:
+              grid:
+                - grid-template-columns: 64px 1fr
+                - grid-template-areas: "\" i n \""
+              card:
+                - background: "#F4F3FA"
+                - height: 75px
+              img_cell:
+                - width: 22px
+              icon:
+                - width: 22px
+                - color: "#000000"
+              name:
+                - justify-self: start
+                - font-size: 14px
+                - font-weight: 400
+                - color: "#000000"
+            state:
+              - value: "on"
+                styles:
+                  card:
+                    - background: "#f3c843"
