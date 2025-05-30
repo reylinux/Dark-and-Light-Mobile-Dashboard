@@ -1,0 +1,106 @@
+type: custom:paper-buttons-row
+styles:
+  justify-content: flex-start
+  flex-wrap: wrap
+  font-size: 1em
+  line-height: 1.2em
+  margin: 6px 0 12px 0
+  width: 100%
+buttons:
+  - layout: name
+    name: It is
+    styles:
+      button:
+        flex-basis: 1
+        flex-shrink: 0
+      name:
+        color: black
+  - layout: name|icon
+    entity: weather.forecast_home
+    name: >-
+      {{ state_attr(config.entity, 'temperature') }}°, {{ states(config.entity)
+      }}
+    icon: "{{ states('sensor.weather_condition_icon') }}"
+    styles:
+      icon:
+        color: black
+      name:
+        color: black
+      button:
+        padding: 2px 8px
+        background-color: "#EAE9EF"
+        border-radius: 24px
+        flex-basis: 1
+        flex-shrink: 0
+        display: flex
+  - layout: name
+    name: outside, with a wind blowing at
+    styles:
+      button:
+        flex-basis: 1
+        flex-shrink: 0
+      name:
+        color: black
+  - layout: name
+    entity: weather.forecast_home
+    name: "{{ state_attr(config.entity, 'wind_speed')}} km/h."
+    styles:
+      name:
+        color: black
+      button:
+        padding: 2px 8px
+        background-color: "#EAE9EF"
+        border-radius: 24px
+        flex-basis: 1
+        flex-shrink: 0
+        display: flex
+  - layout: name
+    name: Expect of
+    styles:
+      button:
+        flex-basis: 1
+        flex-shrink: 0
+      name:
+        color: black
+  - layout: name
+    entity: weather.forecast_home
+    name: "{{ states('sensor.home_realfeel_temperature_max_day_0') }} °🔺"
+    styles:
+      name:
+        color: black
+      button:
+        padding: 2px 8px
+        background-color: "#EAE9EF"
+        border-radius: 24px
+        flex-basis: 1
+        flex-shrink: 0
+        display: flex
+  - layout: name
+    name: and low of
+    styles:
+      button:
+        flex-basis: 1
+        flex-shrink: 0
+      name:
+        color: black
+  - layout: name
+    entity: weather.forecast_home
+    name: "{{ states('sensor.home_realfeel_temperature_min_day_0') }}°🔻"
+    styles:
+      name:
+        color: black
+      button:
+        padding: 2px 8px
+        background-color: "#EAE9EF"
+        border-radius: 24px
+        flex-basis: 1
+        flex-shrink: 0
+        display: flex
+  - layout: name
+    name: today.
+    styles:
+      button:
+        flex-basis: 1
+        flex-shrink: 0
+      name:
+        color: black
