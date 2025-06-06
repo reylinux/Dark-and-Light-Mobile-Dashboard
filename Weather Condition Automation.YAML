@@ -1,0 +1,31 @@
+alias: Update Weather Condition
+description: ""
+triggers:
+  - minutes: "0"
+    trigger: time_pattern
+  - minutes: /30
+    trigger: time_pattern
+conditions: []
+actions:
+  - target:
+      entity_id: weather.forecast_home
+    data:
+      type: hourly
+    response_variable: forecast_data
+    action: weather.get_forecasts
+  - if:
+      - condition: template
+        value_template: >-
+          {{ forecast_data.get('weather.forecast_home', {}).get('forecast',
+          [])[0] is defined and forecast_data.get('weather.forecast_home',
+          {}).get('forecast', [])[0].get('condition') is defined }}
+    then:
+      - target:
+          entity_id: input_text.weather_condition
+        data:
+          value: >-
+            {{
+            forecast_data['weather.forecast_home']['forecast'][0]['condition']
+            }}
+        action: input_text.set_value
+mode: single
