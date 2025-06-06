@@ -23,7 +23,7 @@ HACS repos you would need to replicate the dashboard:
 - [my cards bundle](http://homeassistant.local:8123/hacs/repository/399108901) - local HACS link
 - [local conditional card](http://homeassistant.local:8123/hacs/repository/218178802) - local HACS link
 - [navbar-card](https://github.com/joseluis9595/lovelace-navbar-card)
-- [simple-swipe-card](https://github.com/Nemuritor01/css-swipe-card) - new addition over my old theme
+- [simple-swipe-card](https://github.com/nutteloost/simple-swipe-card) - new addition over my old theme
 - [expander-card](https://github.com/Alia5/lovelace-expander-card) - new addition over my old theme
 
 Integrations required:
